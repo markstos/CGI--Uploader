@@ -1287,7 +1287,7 @@ __END__
 =head1 Contributing
 
 Patches, questions and feedback are welcome. I maintain CGI::Uploader using
-darcs, a CVS alterantive ( http://www.darcs.net/ ). My darcs archive is here:
+darcs, a CVS alternative ( http://www.darcs.net/ ). My darcs archive is here:
 http://mark.stosberg.com/darcs_hive/uploader/
 
 =head1 Author
