@@ -251,6 +251,8 @@ sub new {
 
 	});
 	$in{db_driver} = $in{dbh}->{Driver}->{Name};
+    # Support PostgreSQL via ODBC
+    $in{db_driver} = 'Pg' if $in{dbh}->get_info(17) eq 'PostgreSQL';
 	unless (($in{db_driver} eq 'mysql') or ($in{db_driver} eq 'Pg')) {
 		die "only mysql and Pg drivers are supported at this time. ";
 	}

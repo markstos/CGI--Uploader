@@ -12,6 +12,8 @@ Revision history for Perl extension CGI::Uploader.
     - extract_meta() now also returns the original filename with the
       'file_name' key.
 
+    - PostgreSQL via ODBC is now supported (William McKee)
+
     [BUG FIXES]
     - Fixed RT#12051, an XSS issue in an example application. (William McKee).
 
