@@ -61,13 +61,17 @@ BEGIN {
 	 );
 	 ok($u, 'Uploader object creation');
 
-    my ($tmp_filename)  = CGI::Uploader::Transform::ImageMagick->gen_thumb( 't/20x16.png', [ w => 10 ]);
+{
+     my ($tmp_filename)  = CGI::Uploader::Transform::ImageMagick->gen_thumb( 't/20x16.png', [ w => 10 ]);
      my ($w,$h) = imgsize($tmp_filename); 
      is($h,8,'correct height only width is supplied');
+}
 
-    my ($tmp_filename)  = CGI::Uploader::Transform::ImageMagick->gen_thumb( 't/20x16.png', [ h => 8 ]);
-     ($w,$h) = imgsize($tmp_filename); 
+{
+     my ($tmp_filename)  = CGI::Uploader::Transform::ImageMagick->gen_thumb( 't/20x16.png', [ h => 8 ]);
+     my ($w,$h) = imgsize($tmp_filename); 
      is($w,10,'correct width only width is supplied');
+}
 
 ###
 # create uploads table

@@ -1,5 +1,7 @@
 Revision history for Perl extension CGI::Uploader.
 
+    - Clean up some test warnings (Denis McKeon)
+
 1.00
     - No code changes, I'm just declaring it stable. 
     - Mention availability via darcs
