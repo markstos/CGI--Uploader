@@ -1,4 +1,3 @@
-# arch-tag: ec5da5aa-0205-4381-9d76-c29b2cd733be
 package FriendsPhotos;
 use base 'CGI::Application';
 use strict;
