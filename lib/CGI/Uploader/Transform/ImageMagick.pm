@@ -24,6 +24,9 @@ provided width and height.
 C<gen_thumb> can be called as object or class method. As a class method,
 there there is no need to call C<new()> before calling this method.
 
+L<Graphics::Magick> is used as the first choice image service module.
+L<Image::Magick> is tried next. 
+
 Input:
 
     filename => filename of source image 
@@ -47,34 +50,38 @@ sub gen_thumb {
         });
     die "must supply 'w' or 'h'" unless (defined $p{w} or defined $p{h});
 
-    my ($orig_w,$orig_h,$orig_fmt) = imgsize($orig_filename);
+    # Having both Graphics::Magick and Image::Magick loaded at the same time
+    # can cause very strange problems, so we take care to avoid that
+    # First see if we have already loaded Graphics::Magick or Image::Magick
+    # If so, just use whichever one is already loaded.
+    my $magick_module;
+    if (exists $INC{'Graphics/Magick.pm'}) {
+        $magick_module = 'Graphics::Magick';
+    }
+    elsif (exists $INC{'Image/Magick.pm'}) {
+        $magick_module = 'Image::Magick';
+    }
 
-    my $target_h = $p{h};
-    my $target_w = $p{w};
-
-    $target_h = sprintf("%.1d", ($orig_h * $target_w) / $orig_w) unless $target_h;
-    $target_w = sprintf("%.1d", ($orig_w * $target_h) / $orig_h) unless $target_w;
+    # If neither are already loaded, try loading either one.
+    elsif ( _load_magick_module('Graphics::Magick') ) {
+        $magick_module = 'Graphics::Magick';
+    }
+    elsif ( _load_magick_module('Image::Magick') ) {
+        $magick_module = 'Image::Magick';
+    }
 
     my ($thumb_tmp_fh, $thumb_tmp_filename) = tempfile('CGIuploaderXXXXX', UNLINK => 1);
     binmode($thumb_tmp_fh);
 
-    eval { require Image::Magick; };
-    my $have_image_magick = !$@;
-    eval { require GD; };
-    my $have_gd = !$@; 
-
-     my %gd_map = (
-         'PNG' =>  'png',
-         'JPG'  => 'jpeg',
-         'GIF'  => 'gif',
-     );
-
-    if ($have_image_magick) {
-        my $img = Image::Magick->new();
+    if ($magick_module) {
+        my $img = $magick_module->new();
         my $err;
         eval {
           $err = $img->Read(filename=>$orig_filename);
           die "Error while reading $orig_filename: $err" if $err;
+
+          my ($target_w,$target_h) = _calc_target_size($img,$p{w},$p{h});
+
           $err = $img->Resize($target_w.'x'.$target_h); 
           die "Error while resizing $orig_filename: $err" if $err;
           $err = $img->Write($thumb_tmp_filename);
@@ -87,45 +94,51 @@ sub gen_thumb {
             die $err if ((($code) = $err =~ /(\d+)/) and ($code > 400));
         }
     }
-    elsif ($have_gd and (grep {m/^$orig_fmt$/} keys %gd_map)) {
-		die "Image::Magick wasn't found and GD support is not complete. 
-			Install Image::Magick or fix GD support. ";
-
-        # This formula was figured out by Ehren Nagel
-        my ($actual_w,$actual_h) = ($target_w,$target_h);
-        my $potential_w  = ($target_h/$orig_h)*$orig_w;
-        my $potential_h  = ($target_w/$orig_w)*$orig_h;
-
-        if  (($orig_h > $orig_w ) and ($potential_w < $target_w)) {
-            $actual_w = $potential_w;
-        }
-        elsif (($orig_h > $orig_w ) and ($potential_w >= $target_w)) {
-            $actual_h = $potential_h;
-        }
-        elsif (($orig_h <=  $orig_w ) and ($potential_h < $target_h ))   {
-            $actual_h = $potential_h;
-        }
-        elsif (($orig_h <=  $orig_w ) and ($potential_h >= $target_h ))   {
-            $actual_w = $potential_w;
-        }
-
-        my $orig  = GD::Image->new("$orig_filename") || die "$!";
-        my $thumb = GD::Image->new( $actual_w,$actual_h );
-        $thumb->copyResized($orig,0,0,0,0,$actual_w,$actual_h,$orig_w,$orig_h);
-        my $meth = $gd_map{$orig_fmt};
-        no strict 'refs';
-        no strict 'subs';
-        binmode($thumb_tmp_fh); 
-        print $thumb_tmp_fh, $thumb->$meth;
-    }
     else {
-        die "No graphics module found for image resizing. Install Image::Magick or GD.
-        ( GD is only good for  PNG and JPEG, but may be easier to get installed ): $@ "
+        die "No graphics module found for image resizing. Install Graphics::Magick or Image::Magick: $@ "
     }
 
     assert ($thumb_tmp_filename, 'thumbnail tmp file created');
     return $thumb_tmp_filename;
 
 }
+
+# Calculate the target with height
+# 
+# my ($target_w,$target_h) = _calc_target_size($img,$p{w},$p{h})
+# 
+# Input:
+# 
+#   - Magick object, pre-opened with the original file
+#   - provided width
+#   - provided height
+
+sub _calc_target_size {
+    my ($img,$w,$h) = @_;
+
+    my $target_h = $h;
+    my $target_w = $w;
+    my ($orig_w,$orig_h) = $img->Get('width','height');
+
+    $target_h = sprintf("%.1d", ($orig_h * $target_w) / $orig_w) unless $target_h;
+    $target_w = sprintf("%.1d", ($orig_w * $target_h) / $orig_h) unless $target_w;
+
+    return ($target_w,$target_h);
+
+}
+
+
+
+
+# load Graphics::Magick or Image::Magick if one is not already loaded.
+sub _load_magick_module {
+    my $module_name = shift;
+    eval {
+        local $SIG{__DIE__};
+        require $module_name;
+    };
+    return !$@;
+}
+
 
 1;
