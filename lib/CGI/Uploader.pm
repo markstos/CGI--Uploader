@@ -183,7 +183,8 @@ This is not required. It simply allows you to use custom column names.
   extension       => 'extension',
   width           => 'width',
   height          => 'height',   
-  gen_from_id => 'gen_from_id',
+  gen_from_id     => 'gen_from_id',
+  file_name       => 'file_name',   
 
 You may also define additional column names with a value of 'undef'. This feature
 is only useful if you override the C<extract_meta()> method or pass in
@@ -844,6 +845,7 @@ Returns: a hash reference of meta data, following this example:
          mime_type => 'image/gif',
          extension => '.gif',
          bytes     => 60234,
+         file_name => 'happy.txt',
  
          # only for images
          width     => 50,
@@ -911,6 +913,7 @@ sub extract_meta {
     my ($width,$height) = imgsize($tmp_filename);
 
     return { 
+        file_name => $file_name,
         mime_type => $mt, 
         extension => $ext,
         bytes     => (stat ($tmp_filename))[7],
