@@ -1,5 +1,8 @@
 Revision history for Perl extension CGI::Uploader.
 
+    - TODO: add support for Graphics::Magick, which will ideally be addressed
+      in part by better Graphics::Magick in Image::Size being available.
+
     - Clean up some test warnings (Denis McKeon)
 
 1.00
