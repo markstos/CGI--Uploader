@@ -1,6 +1,3 @@
-# Don't edit the next line
-# arch-tag: Mark_Stosberg_<mark@summersault.com>--2004-08-14_15:40:50
-
 package CGI::Uploader::Transform::ImageMagick;
 
 use base 'Exporter';
