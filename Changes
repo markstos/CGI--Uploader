@@ -3,9 +3,13 @@ Revision history for Perl extension CGI::Uploader.
     - TODO: add support for Graphics::Magick, which will ideally be addressed
       in part by better Graphics::Magick in Image::Size being available.
 
-    - Bug fix: Fixed RT#12051, an XSS issue in an example application. (William Mckee).
+    [BUG FIXES]
+    - Fixed RT#12051, an XSS issue in an example application. (William McKee).
 
+    [INTERNALS]
     - Clean up some test warnings (Denis McKeon)
+
+    - Better diagnostics in ImageMagick.pm (William McKee)
 
 1.00
     - No code changes, I'm just declaring it stable. 

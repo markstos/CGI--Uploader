@@ -73,11 +73,17 @@ sub gen_thumb {
 
     if ($have_image_magick) {
         my $img = Image::Magick->new();
-        $img->Read(filename=>$orig_filename);
-        $img->Resize($target_w.'x'.$target_h); 
-        my $err = $img->Write($thumb_tmp_filename);
-        if ($err) {
-            warn $err;
+        my $err;
+        eval {
+          $err = $img->Read(filename=>$orig_filename);
+          die "Error while reading $orig_filename: $err" if $err;
+          $err = $img->Resize($target_w.'x'.$target_h); 
+          die "Error while resizing $orig_filename: $err" if $err;
+          $err = $img->Write($thumb_tmp_filename);
+          die "Error while writing $orig_filename: $err" if $err;
+        };
+        if ($@) {
+            warn $@;
             my $code;
             # codes > 400 are fatal 
             die $err if ((($code) = $err =~ /(\d+)/) and ($code > 400));
