@@ -5,8 +5,9 @@ use Image::Size;
 use File::Temp qw/tempfile/;
 use Params::Validate (qw/:all/);
 use Carp::Assert;
-use vars (qw/@EXPORT/);
+use vars (qw/@EXPORT $VERSION/);
 
+$VERSION = 1.1_1;
 
 @EXPORT = (qw/&gen_thumb/);
 
