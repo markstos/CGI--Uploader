@@ -1,14 +1,22 @@
 Revision history for Perl extension CGI::Uploader.
 
-    - TODO: add support for Graphics::Magick, which will ideally be addressed
-      in part by better Graphics::Magick in Image::Size being available.
+1.1_1 XXX
+    [THINGS THAT MIGHT BREAK YOUR CODE]
+    - 'file_name' is now required in the data model. You can simply add it before upgrading.
+      Something like this should work: 
+        ALTER TABLE your_table_name ADD COLUMN file_name VARCHAR(255);
+
+      Of course, you can name the column something else with the up_table_map. 
+
+    [ENHANCEMENTS]
+    - extract_meta() now also returns the original filename with the
+      'file_name' key.
 
     [BUG FIXES]
     - Fixed RT#12051, an XSS issue in an example application. (William McKee).
 
     [INTERNALS]
     - Clean up some test warnings (Denis McKeon)
-
     - Better diagnostics in ImageMagick.pm (William McKee)
 
 1.00
