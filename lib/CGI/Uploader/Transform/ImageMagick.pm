@@ -1,7 +1,6 @@
 package CGI::Uploader::Transform::ImageMagick;
 
 use base 'Exporter';
-use Image::Size;
 use File::Temp qw/tempfile/;
 use Params::Validate (qw/:all/);
 use Carp::Assert;
@@ -26,9 +25,10 @@ C<gen_thumb> can be called as object or class method. As a class method,
 there there is no need to call C<new()> before calling this method.
 
 Input:
+
     filename => filename of source image 
-    w => max width of thumbnail
-    h => max height of thumbnail
+    w        => max width of thumbnail
+    h        => max height of thumbnail
 
 One or both  of C<w> or C<h> is required.
 
