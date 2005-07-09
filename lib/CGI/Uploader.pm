@@ -253,8 +253,8 @@ sub new {
 	$in{db_driver} = $in{dbh}->{Driver}->{Name};
     # Support PostgreSQL via ODBC
     $in{db_driver} = 'Pg' if $in{dbh}->get_info(17) eq 'PostgreSQL';
-	unless (($in{db_driver} eq 'mysql') or ($in{db_driver} eq 'Pg')) {
-		die "only mysql and Pg drivers are supported at this time. ";
+	unless (($in{db_driver} eq 'mysql') or ($in{db_driver} eq 'Pg') or ($in{db_driver} eq 'SQLite')) {
+		die "only mysql, Pg and SQLite drivers are supported at this time. You are trying to use $in{db_driver}.";
 	}
 
     unless ($in{query}) {
@@ -1008,6 +1008,9 @@ sub store_meta {
     $DBH->do($stmt,{},@bind);
     if (!$is_update && $self->{db_driver} eq 'mysql') {
         $id = $DBH->{'mysql_insertid'};
+    }
+    if (!$is_update && $self->{db_driver} eq 'SQLite') {
+      $id = $DBH->func('last_insert_rowid')
     }
 
 	return $id;
