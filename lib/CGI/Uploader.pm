@@ -863,6 +863,16 @@ sub extract_meta {
     my $uploaded_mt = shift || '';
 
     
+    #   Determine and set the appropriate file system parsing routines for the 
+    #   uploaded path name based upon the HTTP client header information.
+    use HTTP::BrowserDetect;
+    my $client_os = $^O;
+    my $browser = HTTP::BrowserDetect->new;
+    $client_os = 'MSWin32' if $browser->windows;
+    $client_os = 'MacOS' if $browser->mac;
+    require File::Basename;
+    File::Basename::fileparse_set_fstype($client_os);
+    $file_name = File::Basename::fileparse($file_name,[]);
 
 
    require File::MMagic;	
