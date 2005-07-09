@@ -1,6 +1,6 @@
 Revision history for Perl extension CGI::Uploader.
 
-1.1_1 XXX
+1.1_1 Mon Apr  4 07:52:01 EST 2005
     [THINGS THAT MIGHT BREAK YOUR CODE]
     - 'file_name' is now required in the data model. You can simply add it before upgrading.
       Something like this should work: 
