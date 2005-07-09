@@ -1228,7 +1228,7 @@ option to C<new()>, which affects it's behavior.
 =cut
 
 sub build_loc {
-    validate_pos(@_,1,1,1);
+    validate_pos(@_,1,1,0);
     my ($self,$id,$ext) = @_;
 
     my $scheme = $self->{file_scheme};
