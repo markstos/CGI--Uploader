@@ -614,7 +614,12 @@ sub upload {
    return undef unless ($fh && $filename);
 
    my ($tmp_fh, $tmp_filename) = tempfile('CGIuploaderXXXXX', UNLINK => 1);
-   binmode($tmp_fh);
+
+   #   Determine whether binary mode is required in the handling of uploaded 
+   #   files - 
+   #   Binary mode is deemed to be required when we (the server) are running one one 
+   #   of these platforms: for Windows, OS/2 and VMS 
+   binmode($tmp_fh) if ($^O =~ /OS2|VMS|Win|DOS|Cygwin/i);
 
    require File::Copy;
    import  File::Copy;
