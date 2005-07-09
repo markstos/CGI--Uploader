@@ -660,7 +660,11 @@ sub store_upload {
             uploaded_mt   => { type => SCALAR },
             file_name     => { type => SCALAR | GLOBREF },
             shared_meta   => { type => HASHREF | UNDEF,    default => {} },
-            id_to_update  => { regex => qr/^\d*$/, optional => 1 },
+            # This line is causing a warning to be printed to the Apache error
+            # log by Params::Validate if id_to_update is not set; looks like
+            # an error since optional is set - WLM 2005-07-07
+            #id_to_update  => { regex => qr/^\d*$/, optional => 1 },
+            id_to_update  => { type => SCALAR | UNDEF, optional => 1 },
         });
 
     my (
@@ -684,7 +688,7 @@ sub store_upload {
     my $meta = $self->extract_meta($tmp_filename,$file_name,$uploaded_mt);
 
     $shared_meta ||= {};
-    my $all_meta = { %$meta, %$shared_meta };   
+    my $all_meta = { %$meta, %$shared_meta };
 
     my $id;
     # If it's an update
@@ -699,15 +703,14 @@ sub store_upload {
         $all_meta,
         $id );
 
-
     $self->store_file($file_field,$id,$meta->{extension},$tmp_filename);
 
     my %ids = $self->create_store_gen_files(
-		file_field      => $file_field,
-		meta	        => $all_meta,
-		src_file        => $tmp_filename,
-		gen_from_id => $id,
-    );
+      file_field      => $file_field,
+      meta	        => $all_meta,
+      src_file        => $tmp_filename,
+      gen_from_id => $id,
+    ) || ();
 
     return (%ids, $file_field.'_id' => $id);
 
@@ -928,7 +931,7 @@ sub extract_meta {
    # Now get the image dimensions if it's an image 
     my ($width,$height) = imgsize($tmp_filename);
 
-    return { 
+    return {
         file_name => $file_name,
         mime_type => $mt, 
         extension => $ext,
@@ -952,7 +955,7 @@ Input:
 
  - file field name
 
- - A hashref of key/value pairs to be store. Only the key names defined by the
+ - A hashref of key/value pairs to be stored. Only the key names defined by the
    C<up_table_map> in C<new()> will be used. Other values in the hash will be
    ignored.
 
@@ -1143,11 +1146,13 @@ sub store_file {
     validate_pos(@_,1,1,1,1,1);
     my $self = shift;
     my ($file_field,$id,$ext,$tmp_file) = @_;
-	assert($ext, 'have extension');
-	assert($id,'have id');
-	assert(-f $tmp_file,'tmp file exists');
+    assert($ext, 'have extension');
+    assert($id,'have id');
+    assert(-f $tmp_file,'tmp file exists');
+    assert(-d $self->{updir_path},'updir_path is a directory');
+    assert(-w $self->{updir_path},'updir_path is writeable');
 
-    require File::Copy;	
+    require File::Copy;
     import File::Copy;
     copy($tmp_file, File::Spec->catdir($self->{updir_path},$self->build_loc($id,$ext)) )
     || die "Unexpected error occured when uploading the image: $!";
@@ -1226,10 +1231,11 @@ sub build_loc {
         $loc = "$md5_path/$id$ext";
     }
 }
+
 =head2 upload_field_names()
 
  # As a class method
- (@file_field_names) = CGI::Uplooader->upload_field_names($q);
+ (@file_field_names) = CGI::Uploader->upload_field_names($q);
 
  # As an object method
  (@file_field_names) = $u->upload_field_names();
