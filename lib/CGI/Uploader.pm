@@ -1124,6 +1124,26 @@ sub transform_meta  {
 
 }
 
+=head2 get_meta()
+
+ my $meta_href = $self->get_meta($id);
+
+Returns a hashref of data stored in the uploads database table for the requested file id.
+
+=cut
+
+sub get_meta {
+  validate_pos(@_,1,1);
+  my ($self,$id) = @_;
+
+  my $map = $self->{up_table_map};
+  return  $self->{dbh}->selectrow_hashref("
+            SELECT * FROM $self->{up_table} 
+                WHERE $map->{upload_id} = ?",{},$id);
+}
+
+
+
 =head1 File Methods
 
 =head2 store_file()
