@@ -121,7 +121,7 @@ WriteMakefile(
         'File::Path'          => 0,
 		'MIME::Type'		  => 0, 
 		'MIME::Types'		  => 0,
-		'Params::Validate'    => 0,
+		'Params::Validate'    => 0.77,
 		'SQL::Abstract'	      => 0,
         'CGI'                 => 0,
         'DBI'                 => 0,
