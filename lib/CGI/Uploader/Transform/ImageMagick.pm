@@ -13,9 +13,8 @@ $VERSION = 1.1_1;
 =head2 gen_thumb()
 
  ($thumb_tmp_filename)  = CGI::Uploader->gen_thumb(
-    filename => $orig_filename,
-    w => $width,
-    h => $height,
+    $orig_filename, 
+    [ w => $width, h => $height ]
     );
 
 This function creates a copy of given image file and resizes the copy to the
@@ -29,9 +28,9 @@ L<Image::Magick> is tried next.
 
 Input:
 
-    filename => filename of source image 
-    w        => max width of thumbnail
-    h        => max height of thumbnail
+    filename - filename of source image 
+    w        - max width of thumbnail
+    h        - max height of thumbnail
 
 One or both  of C<w> or C<h> is required.
 
