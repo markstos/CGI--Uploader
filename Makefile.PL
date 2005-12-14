@@ -125,7 +125,7 @@ WriteMakefile(
 		'SQL::Abstract'	      => 0,
         'CGI'                 => 0,
         'DBI'                 => 0,
-        'File::Temp'          => 0,
+        'File::Temp'          => 0.14,
         'Test::DatabaseRow'   => 0,
         'Test::Differences'   => 0,
         'HTML::BrowserDetect'   => 0,
