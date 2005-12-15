@@ -1,7 +1,10 @@
 Revision history for Perl extension CGI::Uploader.
 
+1.1 Wed Dec 14 21:23:56 EST 2005
     [INTERNALS]
     - Now require at least Params::Validate 0.77 (RT#13728)
+    - ..and require at least File::Temp 0.14, for a better chance 
+      of using a real temporary directory. 
 
 1.1_1 Mon Apr  4 07:52:01 EST 2005
     [THINGS THAT MIGHT BREAK YOUR CODE]
