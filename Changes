@@ -1,5 +1,13 @@
 Revision history for Perl extension CGI::Uploader.
 
+1.2 Thu Dec 15 22:35:39 EST 2005
+    [BUG FIXES]
+    - Fixed bug in store_uploads() from improper hash usage.  
+
+    [INTERNALS]
+    - Fixed some typos in Makefile.PL requirements 
+    - Made test suite use SQLite by default for easier testing. 
+
 1.1 Wed Dec 14 21:23:56 EST 2005
     [INTERNALS]
     - Now require at least Params::Validate 0.77 (RT#13728)
