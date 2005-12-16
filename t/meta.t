@@ -2,7 +2,6 @@
 #arch-tag: Mark_Stosberg_<mark@summersault.com>--2004-04-18_15:50:47
 
 use Test::More qw/no_plan/;
-use Test::Differences;
 use Carp::Assert;
 use lib 'lib';
 use strict;

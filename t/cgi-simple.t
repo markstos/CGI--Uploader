@@ -16,7 +16,6 @@ BEGIN { use_ok('CGI::Uploader') };
 BEGIN { use_ok('DBI') };
 BEGIN { use_ok('Test::DatabaseRow') };
 BEGIN { use_ok('Image::Size') };
-BEGIN { use_ok('Test::Differences') };
 BEGIN { use_ok('Image::Magick') };
 BEGIN { use_ok('CGI::Uploader::Transform::ImageMagick') };
 

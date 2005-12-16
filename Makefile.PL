@@ -127,7 +127,6 @@ WriteMakefile(
         'DBI'                 => 0,
         'File::Temp'          => 0.14,
         'Test::DatabaseRow'   => 0,
-        'Test::Differences'   => 0,
         'HTTP::BrowserDetect'   => 0,
 
         # Should be recommeded, but not required. 

@@ -1,7 +1,6 @@
 #########################
 
 use Test::More qw/no_plan/;
-use Test::Differences;
 use Carp::Assert;
 use lib 'lib', '../lib';
 use strict;
