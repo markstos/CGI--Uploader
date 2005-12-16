@@ -3,6 +3,7 @@ MANIFEST
 Makefile.PL
 create_uploader_table.Pg.sql
 create_uploader_table.mysql.sql
+create_uploader_table.SQLite.sql
 lib/CGI/Uploader.pm
 lib/CGI/Uploader/Cookbook.pod
 lib/CGI/Uploader/Transform/ImageMagick.pm

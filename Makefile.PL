@@ -8,9 +8,11 @@ use Data::Dumper ();
 my $TESTDB  = "test";
 
 use vars qw($opt);
-$opt =
-  { "help" => \&Usage,
-  };
+$opt = { 
+    "help"    => \&Usage ,
+     testdsn  => 'dbi:SQLite:dbname=t/test.db',
+};
+
 Getopt::Long::GetOptions($opt, "help", "testdsn=s", "testuser=s","testpassword=s");
 my $source = {};
 
