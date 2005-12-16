@@ -1,6 +1,3 @@
-# Please don't remove the next line. Thanks. -mark
-#arch-tag: Mark_Stosberg_<mark@summersault.com>--2004-04-19_20:22:34
-
 use Test::More qw/no_plan/;
 use Test::Differences;
 use Carp::Assert;

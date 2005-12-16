@@ -1,10 +1,4 @@
-# don't edit the next line. Thanks.
-# arch-tag: 7d260dea-947d-4183-a2ed-5b32c0c46b0a 
-
-#########################
-
 use Test::More;
-use lib 'lib';
 use strict;
 
 eval { 

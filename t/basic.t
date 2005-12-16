@@ -74,6 +74,10 @@ ok($DBH,'connecting to database'),
 # create uploads table
 my $drv = $DBH->{Driver}->{Name};
 
+if ($drv eq 'SQLite') {
+    diag "testing with SQLite version: " .$DBH->selectrow_array("SELECT sqlite_version()");
+}
+
 ok(open(IN, "<create_uploader_table.".$drv.".sql"), 'opening SQL create file');
 my $sql = join "\n", (<IN>);
 my $created_up_table = $DBH->do($sql);
@@ -131,7 +135,6 @@ SKIP: {
 	 eval { $entity = $u->store_uploads($form_data) };
 	 is($@,'', 'calling store_uploads');
 
-use Data::Dumper;
     my @pres = grep {!m/png/} $u->spec_names; 
     ok(eq_set([grep {m/_id$/} keys %$entity ],[map { $_.'_id'} @pres]),
 	 	'store_uploads entity additions work') || diag Dumper (\@pres,$entity);

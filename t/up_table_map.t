@@ -1,7 +1,3 @@
-#########################
-# Please don't remove the next line. Thanks.
-# arch-tag: Mark_Stosberg_<mark@summersault.com>--2004-03-27_21:15:22
-
 use Test::More qw/no_plan/;
 use Test::Differences;
 use lib 'lib';
