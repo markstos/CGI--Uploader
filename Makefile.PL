@@ -128,11 +128,11 @@ WriteMakefile(
         'File::Temp'          => 0.14,
         'Test::DatabaseRow'   => 0,
         'Test::Differences'   => 0,
-        'HTML::BrowserDetect'   => 0,
+        'HTTP::BrowserDetect'   => 0,
 
         # Should be recommeded, but not required. 
         # Image::Magick also works as an alternative. 
-        'Graphics::Magick'    => 0,  
+        'Image::Magick'    => 0,  
 
         # Used by some tests right now, but not really needed.
         'Image::Size'         => 0,  
