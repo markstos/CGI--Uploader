@@ -1,22 +1,35 @@
-use Test::More qw/no_plan/;
+use Test::More;
 use Carp::Assert;
-use lib 'lib';
 use strict;
 
 BEGIN { 
     use_ok('CGI::Uploader');
     use_ok('File::Path');
-    use_ok('Image::Size');
-    use_ok('DBI');
-    use_ok('CGI');
-    use_ok('Image::Magick');
-    use_ok('CGI::Uploader::Transform::ImageMagick');
 };
 
+my $found_module = 0;
+eval { require Image::Magick; };
+$found_module = !$@;
+if ($found_module) {
+    plan (qw/no_plan/)
+}
+else {
+    eval { require Graphics::Magick; };
+    $found_module = !$@;
+    if ($found_module) {
+        plan (qw/no_plan/)
+    }
+    else {
+        plan skip_all => "No graphics module found for image resizing. Install Graphics::Magick or Image::Magick: $@ ";
+    }
+}
 
- my ($tmp_filename)  = CGI::Uploader::Transform::ImageMagick->gen_thumb( 't/20x16.png', [ w => 5 ]);
+use CGI::Uploader::Transform::ImageMagick;
 
- my ($w,$h) = imgsize($tmp_filename); 
+ my ($tmp_filename, $img)  = CGI::Uploader::Transform::ImageMagick->gen_thumb( 't/20x16.png', [ w => 5 ]);
+
+ my ($w,$h) = $img->Get('width','height');
+
  is($w,5,'as class method - correct height only width is supplied');
  is($h,4,'as class method - correct height only width is supplied');
 
@@ -33,7 +46,7 @@ BEGIN {
     }
     ok($return, 'loading configuration');
 
-
+    use DBI;
     my $DBH =  DBI->connect($dsn,$user,$password);
     ok($DBH,'connecting to database'), 
 
@@ -48,6 +61,7 @@ BEGIN {
         },
 	 );
 
+     use CGI;
 	 my $u = 	CGI::Uploader->new(
 		updir_path=>'t/uploads',
 		updir_url=>'http://localhost/test',
@@ -58,14 +72,14 @@ BEGIN {
 	 ok($u, 'Uploader object creation');
 
 {
-     my ($tmp_filename)  = CGI::Uploader::Transform::ImageMagick->gen_thumb( 't/20x16.png', [ w => 10 ]);
-     my ($w,$h) = imgsize($tmp_filename); 
+     my ($tmp_filename,$img)  = CGI::Uploader::Transform::ImageMagick->gen_thumb( 't/20x16.png', [ w => 10 ]);
+     my ($w,$h) = $img->Get('width','height');
      is($h,8,'correct height only width is supplied');
 }
 
 {
-     my ($tmp_filename)  = CGI::Uploader::Transform::ImageMagick->gen_thumb( 't/20x16.png', [ h => 8 ]);
-     my ($w,$h) = imgsize($tmp_filename); 
+     my ($tmp_filename,$img)  = CGI::Uploader::Transform::ImageMagick->gen_thumb( 't/20x16.png', [ h => 8 ]);
+     my ($w,$h) = $img->Get('width','height');
      is($w,10,'correct width only width is supplied');
 }
 
