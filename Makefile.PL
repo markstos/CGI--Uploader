@@ -2,8 +2,17 @@ use strict;
 BEGIN { $^W = 1 } # use warnings in Perl 5.6 parlance
 use inc::Module::Install;
 
-no_index
-    directory => 't/lib';
+# Module::Install stuff
+{
+    no_index directory => 't/lib';
+    license ('perl');
+
+   # Graphics::Magick is recommended over Image::Magick, but isn't on CPAN
+    recommends
+        'Image::Magick'    => 0;
+
+}
+
 
 use Config ();
 use Getopt::Long();
@@ -134,15 +143,13 @@ WriteMakefile(
         'File::Temp'          => 0.14,
         'Test::DatabaseRow'   => 0,
         'HTTP::BrowserDetect' => 0,
+        'Scalar::Util'        => 0,
 
         # For testing
         'HTTP::Request::Common' => 0,   
 
         # Used 
 
-        # Should be recommeded, but not required. 
-        # Image::Magick also works as an alternative. 
-        # 'Image::Magick'    => 0,  
 
 	}, 
     ($] >= 5.005 ?    ## Add these new keywords supported since 5.005
