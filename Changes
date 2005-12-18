@@ -1,5 +1,7 @@
 Revision history for Perl extension CGI::Uploader.
 
+2.0 Sat Dec 17 23:12:35 EST 2005
+
     [ENHANCEMENTS]
     - Previously the extension and MIME type were inherited
       by generated files. Now the metadata for generated files
@@ -7,7 +9,20 @@ Revision history for Perl extension CGI::Uploader.
       if you want to create thumbnails in a different image format
       than the large images. 
 
+    - A cleaner and simpler API for calling gen_thumb() and other potential
+      transform_methods has been introduced. The new syntax looks like this:
+
+         transform_method => gen_thumb({ w => 100, h => 100 }),
+   
+      The old syntax is still supported.    
+
+    - "gen_thumb()" can now return the Image/Graphics::Magick object as a
+      second argument. This may not be useful outside of the test suite...
+
     [BUG FIXES]
+    - Image::Magick is no longer required to install CGI::Uploader, just
+      recommended.
+
     - If an uploaded was updated and had its MIME type changed in the process,
       the old file was left on the file system. Fixed. 
 
@@ -17,6 +32,7 @@ Revision history for Perl extension CGI::Uploader.
     [INTERNALS]
     - Moved to Makefile.PL to use Module::Install
     - test suite clean up.
+    - new required modules: Scalar::Util and HTTP::Request::Common
 
 1.2 Thu Dec 15 22:35:39 EST 2005
     [BUG FIXES]

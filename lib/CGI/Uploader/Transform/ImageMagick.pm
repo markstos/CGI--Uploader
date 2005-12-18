@@ -6,7 +6,7 @@ use Params::Validate (qw/:all/);
 use Carp::Assert;
 use vars (qw/@EXPORT $VERSION/);
 
-$VERSION = 1.1;
+$VERSION = 2.0;
 
 @EXPORT = (qw/&gen_thumb/);
 
