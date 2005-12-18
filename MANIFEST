@@ -7,6 +7,7 @@ create_uploader_table.SQLite.sql
 lib/CGI/Uploader.pm
 lib/CGI/Uploader/Cookbook.pod
 lib/CGI/Uploader/Transform/ImageMagick.pm
+t/lib/CGI/Uploader/Test.pm
 t/200x200.gif
 t/20x16.png
 t/basic.t
@@ -18,8 +19,6 @@ t/gen_thumb.t
 t/meta.t
 t/pod.t
 t/up_table_map.t
-t/upload_post_reversed.txt
-t/upload_post_text.txt
 t/uploads/.empty
 examples/friends_photos/uploads/.empty
 examples/friends_photos/README

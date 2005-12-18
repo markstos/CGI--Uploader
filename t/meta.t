@@ -1,60 +1,55 @@
-use Test::More qw/no_plan/;
+use Test::More; 
+Test::More->builder->no_ending(1);
+use Config;
 use Carp::Assert;
-use lib 'lib';
+use lib 't/lib';
 use strict;
 
 BEGIN { use_ok('CGI::Uploader') };
 BEGIN { use_ok('DBI') };
-BEGIN { 
-    use_ok('CGI');
-    use_ok('Image::Magick');
-    use_ok('CGI::Uploader::Transform::ImageMagick');
-};
+BEGIN { use_ok('CGI') };
+use HTTP::Request::Common;
+use CGI::Uploader::Test;
+
+$| = 1;
+
+if (! $Config{d_fork} ) {
+    plan skip_all => "fork not available on this platform";
+}
+else {
+    plan tests => 12;
+
+}
+
+my ($DBH, $drv) = setup();
+
+my $req = &HTTP::Request::Common::POST(
+    '/dummy_location',
+    Content_Type => 'form-data',
+    Content      => [
+        test_file => ["t/test_file.txt"],
+    ]
+);
+
+# Useful in simulating an upload. 
+$ENV{REQUEST_METHOD} = 'POST';
+$ENV{CONTENT_TYPE}   = 'multipart/form-data';
+$ENV{CONTENT_LENGTH} = $req->content_length;
+if ( open( CHILD, "|-" ) ) {
+    print CHILD $req->content;
+    close CHILD;
+    exit 0;
+}
 
 my $q = new CGI;
 
-use vars qw($dsn $user $password);
-my $file ='t/cgi-uploader.config';
-my $return;
-unless ($return = do $file) {
-	warn "couldn't parse $file: $@" if $@;
-	warn "couldn't do $file: $!"    unless defined $return;
-	warn "couldn't run $file"       unless $return;
-}
-ok($return, 'loading configuration');
-
-
-my $DBH =  DBI->connect($dsn,$user,$password);
-ok($DBH,'connecting to database'), 
-
-# create uploads table
-my $drv = $DBH->{Driver}->{Name};
-
-ok(open(IN, "<create_uploader_table.".$drv.".sql"), 'opening SQL create file');
-my $sql = join "\n", (<IN>);
-my $created_up_table = $DBH->do($sql);
-ok($created_up_table, 'creating uploads table');
-
-ok(open(IN, "<t/create_test_table.sql"), 'opening SQL create test table file');
-$sql = join "\n", (<IN>);
-
-# Fix mysql non-standard quoting
-$sql =~ s/"/`/gs if ($drv eq 'mysql');
-
-my $created_test_table = $DBH->do($sql);
-ok($created_test_table, 'creating test table');
-
-SKIP: {
-	 skip "Couldn't create database table", 20 unless $created_up_table;
-
-     $DBH->do("ALTER TABLE uploads ADD COLUMN custom char(64)");
+$DBH->do("ALTER TABLE uploads ADD COLUMN custom char(64)");
 
 	 my %imgs = (
-		'img_1' => {
+		'test_file' => {
             gen_files => {
-                img_1_thumb => {
-                    transform_method => \&gen_thumb,
-                    params => [{ w => 50, h => 60 }],
+                test_file_gen => {
+                    transform_method => \&test_gen_transform
                 },
             },
         },
@@ -79,10 +74,10 @@ SKIP: {
 
      eval {
          my %entity_upload_extra = $u->store_upload(
-             file_field  => 'img_1',
-             src_file    => 't/200x200.gif',
-             uploaded_mt => 'image/gif',
-             file_name   => '200x200.gif',
+             file_field  => 'test_file',
+             src_file    => 't/test_file.txt',
+             uploaded_mt => 'test/plain',
+             file_name   => 'test_file.txt',
              shared_meta => { custom => 'custom_value' },
              );
          };
@@ -92,7 +87,7 @@ SKIP: {
         "SELECT count(*) 
             FROM uploads 
             WHERE custom = 'custom_value'");
-    is($imgs_with_custom_value,2, 'both img and thumbnail have shared_meta');
+    is($imgs_with_custom_value,2, 'both parent and generated file have shared_meta');
 
     # testing transform_meta
     my $img_href = $DBH->selectrow_hashref("SELECT * FROM uploads WHERE upload_id = 1");
@@ -105,36 +100,9 @@ SKIP: {
     );
 
     is($meta{test_id}, 1,      'meta_hashref id');
-    is($meta{test_width}, 200, 'meta_hashref width');
-    is($meta{test_height}, 200, 'meta_hashref height');
     ok((not exists $meta{test_extension}), 'meta_hashref extension');
-    like($meta{test_url}, qr!http://localhost/test/1.gif\?!, 'meta_hashref url');
-
-    # Now test a mapped field
+    like($meta{test_url}, qr!http://localhost/test/1.txt\?!, 'meta_hashref url');
 
 
 
-
-
-
-
-}
-
-
-
-# We use an end block to clean up even if the script dies.
-END {
- 	unlink <t/uploads/*>;
- 	if ($DBH) {
- 		if ($created_up_table) {
- 			$DBH->do("DROP SEQUENCE upload_id_seq") if ($drv eq 'Pg');
- 			$DBH->do("DROP TABLE uploads");
- 		}
- 		if ($created_test_table) {
- 			$DBH->do('DROP TABLE cgi_uploader_test');
- 		}
- 		$DBH->disconnect;
- 	}
-};
- 
 

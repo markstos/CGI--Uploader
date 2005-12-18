@@ -1,5 +1,23 @@
 Revision history for Perl extension CGI::Uploader.
 
+    [ENHANCEMENTS]
+    - Previously the extension and MIME type were inherited
+      by generated files. Now the metadata for generated files
+      is extracted directly from them. This should be useful
+      if you want to create thumbnails in a different image format
+      than the large images. 
+
+    [BUG FIXES]
+    - If an uploaded was updated and had its MIME type changed in the process,
+      the old file was left on the file system. Fixed. 
+
+    - If 'up_table_map' was used to modify the name of the extension field, 
+      then transform_meta() would return empty values for the extensions. Fixed.
+
+    [INTERNALS]
+    - Moved to Makefile.PL to use Module::Install
+    - test suite clean up.
+
 1.2 Thu Dec 15 22:35:39 EST 2005
     [BUG FIXES]
     - Fixed bug in store_uploads() from improper hash usage.  

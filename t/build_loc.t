@@ -1,6 +1,7 @@
 use Test::More qw/no_plan/;
 use Carp::Assert;
-use lib 'lib';
+use lib 't/lib';
+use CGI::Uploader::Test;
 use strict;
 
 BEGIN { 
@@ -11,30 +12,21 @@ BEGIN {
     use_ok('CGI');
 };
 
-    use vars qw($dsn $user $password);
-    my $file ='t/cgi-uploader.config';
-    my $return;
-    unless ($return = do $file) {
-        warn "couldn't parse $file: $@" if $@;
-        warn "couldn't do $file: $!"    unless defined $return;
-        warn "couldn't run $file"       unless $return;
-    }
-    ok($return, 'loading configuration');
-
-
-    my $DBH =  DBI->connect($dsn,$user,$password);
-    ok($DBH,'connecting to database'), 
+    my ($DBH,$drv) =  setup();
 
 	 my %imgs = (
 		'img_1' => [],
 	 );
+
+     use CGI;
+     my $q = CGI->new;
 
 	 my $u = 	CGI::Uploader->new(
 		updir_path=>'t/uploads',
 		updir_url=>'http://localhost/test',
 		dbh  => $DBH,
 		spec => \%imgs,
-        query => CGI->new(),
+        query => $q,
         file_scheme => 'md5',
 	 );
 	 ok($u, 'Uploader object creation');
@@ -48,7 +40,6 @@ BEGIN {
 # We use an end block to clean up even if the script dies.
 END {
     rmtree(['t/uploads/2']); 
-    $DBH->disconnect;
 };
  
 
