@@ -248,7 +248,7 @@ sub new {
     # Support PostgreSQL via ODBC
     $in{db_driver} = 'Pg' if $in{dbh}->get_info(17) eq 'PostgreSQL';
 	unless (($in{db_driver} eq 'mysql') or ($in{db_driver} eq 'Pg') or ($in{db_driver} eq 'SQLite')) {
-		die "only mysql, Pg and SQLite drivers are supported at this time. You are trying to use $in{db_driver}.";
+		croak "only mysql, Pg and SQLite drivers are supported at this time. You are trying to use $in{db_driver}.";
 	}
 
     unless ($in{query}) {
@@ -424,7 +424,7 @@ sub delete_checked_uploads {
     my $q = $self->{query};
 	my $map = $self->{up_table_map};
 
-	die "missing gen_from_id in up_table_map"  unless $map->{gen_from_id};
+	croak "missing gen_from_id in up_table_map"  unless $map->{gen_from_id};
 
 
 	my @to_delete;
@@ -432,7 +432,7 @@ sub delete_checked_uploads {
  	for my $file_field (keys %$imgs) {
 		if ($q->param($file_field.'_delete') ) {
 			my $upload_id = $q->param($file_field.'_id') || 
-				die "$file_field was selected to delete, 
+				croak "$file_field was selected to delete, 
 					but ID was missing in '${file_field}_id' field";
 
 			$self->delete_upload($upload_id);
@@ -618,7 +618,7 @@ sub upload {
 
    require File::Copy;
    import  File::Copy;
-   copy($fh,$tmp_filename) || die "upload: unable to create tmp file: $!";
+   copy($fh,$tmp_filename) || croak "upload: unable to create tmp file: $!";
 
     return ($tmp_filename,$mt,$filename);
 }
@@ -926,7 +926,7 @@ sub extract_meta {
         $ext = ".$ext" if $ext;
    }
    else {
-	   die "no extension found for file name: $file_name";
+	   croak "no extension found for file name: $file_name";
    }
 
 
@@ -1180,7 +1180,7 @@ sub store_file {
     require File::Copy;
     import File::Copy;
     copy($tmp_file, File::Spec->catdir($self->{updir_path},$self->build_loc($id,$ext)) )
-    || die "Unexpected error occured when uploading the image: $!";
+    || croak "Unexpected error occured when uploading the image: $!";
 
 }
 
@@ -1206,13 +1206,13 @@ sub delete_file {
         SELECT $map->{extension}
             FROM $self->{up_table}
             WHERE $map->{upload_id} = ?",{},$id);
-    $ext || die "found no extension in meta data for ID $id. Deleting file failed.";
+    $ext || croak "found no extension in meta data for ID $id. Deleting file failed.";
 
 
     my $file = $self->{updir_path}.'/'.$self->build_loc($id,$ext);
 
     if (-e $file) {  
-        unlink $file || die "couldn't delete upload  file: $file:  $!";
+        unlink $file || croak "couldn't delete upload  file: $file:  $!";
     }
     else {
         warn "file to delete not found: $file";
