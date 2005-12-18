@@ -30,7 +30,8 @@ Revision history for Perl extension CGI::Uploader.
       then transform_meta() would return empty values for the extensions. Fixed.
 
     [INTERNALS]
-    - Moved to Makefile.PL to use Module::Install
+    - Migrated Makefile.PL to use Module::Install. This allows me to keep the hairy 
+      Makefile.PL stuff I have, but easily add 'no_index' and 'recommends' metadata.
     - test suite clean up.
     - new required modules: Scalar::Util and HTTP::Request::Common
 
