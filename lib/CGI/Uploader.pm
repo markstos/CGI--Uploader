@@ -2,7 +2,7 @@ package CGI::Uploader;
 
 use 5.005;
 use strict;
-use CGI::Carp;
+use Carp;
 use Params::Validate qw/:all/;
 use File::Path;
 use File::Spec;
@@ -26,15 +26,14 @@ CGI::Uploader - Manage CGI uploads using SQL database
  	spec       => {
         # Upload one image named from the form field 'img' 
         # and create one thumbnail for it. 
-        img_1 => {                                                                                                                             
-            gen_files => {                                                                                                                
+        img_1 => {    
+            gen_files => {       
                 'img_1_thmb_1' => {
-                    transform_method => \&gen_thumb,                                                                    
-                    params => [ w => 100, h => 100 ],                                                             
-                  }                                                                                                         
-              }                                                                                                                
-        },                                                                                                                            
-    },                
+                    transform_method => gen_thumb({ w => 100, h => 100 }),
+                  }   
+              }                                                                                                 
+        },        
+    },      
 
  	updir_url  => 'http://localhost/uploads',
  	updir_path => '/home/user/www/uploads',
@@ -67,28 +66,23 @@ application.  (Browse, Read, Edit, Add, Delete).
            img_1 => {   
              gen_files => {   
                      'img_1_thmb_1' => {                                                                          
-                             transform_method => \&gen_thumb,                
-                             params => [{ w => 100, h => 100 }],                                                             
-                     }                                                                                                         
-                     'img_1_thmb_2' => {                                                                                      
-                             transform_method => \&gen_thumb, 
-                             params => [{ w => 50, h => 50 }], 
-                     }                                                                                                          
-             }                                                                                                                
-           },                                                                                                                            
+                             transform_method => gen_thumb({ w => 100, h => 100 }),   
+                     }                                                 
+                     'img_1_thmb_2' => {                                       
+                             transform_method => gen_thumb({ w => 50, h => 50 }), 
+                     }    
+             }           
+           },           
        },                
 
         # Just upload it
         img_2 => {},
-
         # Downsize the large image to these maximum dimensions if it's larger
         img_3 => {
-            # Besides generating dependent files                                                                                           
-            # We can also transform the file itself                                                                           
-            # Here, we shrink the image to be wider than 380                                                                    
-            transform_method => \&gen_thumb,                                                                                       
-            params => [{ w => 380 }],                                                                                           
-
+            # Besides generating dependent files                                                           
+            # We can also transform the file itself                              
+            # Here, we shrink the image to be wider than 380    
+            transform_method => gen_thumb({ w => 380 }),
         }
     },
 
@@ -675,8 +669,7 @@ sub store_upload {
 
     # Transform file if needed
     if (my $meth = $self->{spec}{$file_field}{transform_method}) {
-        $tmp_filename = $meth->(
-            $self,
+        $tmp_filename = $meth->( $self, 
             $file_name,
             $self->{spec}{$file_field}{params},
         );
@@ -879,7 +872,6 @@ sub extract_meta {
     my $file_name = shift;
     my $uploaded_mt = shift || '';
 
-    
     #   Determine and set the appropriate file system parsing routines for the 
     #   uploaded path name based upon the HTTP client header information.
     use HTTP::BrowserDetect;

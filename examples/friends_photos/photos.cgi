@@ -28,8 +28,7 @@ my $app = FriendsPhotos->new(
 				photo =>  {
                     gen_files => {
                         photo_thumbnail => {
-                            transform_method => \&gen_thumb,
-                            params => [{ w => 100, h => 100}],
+                            transform_method => gen_thumb({ w => 100, h => 100}),
                         },
                     }
                 }
