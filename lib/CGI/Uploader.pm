@@ -522,7 +522,6 @@ sub fk_meta {
     my $map = $self->{up_table_map};
 
 	for my $field (@file_fields) {
-        warn "field: $field\n";
 		my $upload = $DBH->selectrow_hashref(qq!
 			SELECT * 
 				FROM !.$self->{up_table}.qq!, $table AS t
