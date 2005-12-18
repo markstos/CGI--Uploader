@@ -27,3 +27,8 @@ examples/friends_photos/FriendsPhotos.pm
 examples/friends_photos/photo-add.html
 examples/friends_photos/photo-edit.html
 examples/friends_photos/friends.Pg.sql
+inc/Module/Install.pm
+inc/Module/Install/Metadata.pm
+inc/Module/Install/Base.pm
+inc/Module/Install/MakeMaker.pm
+inc/Module/Install/Makefile.pm
