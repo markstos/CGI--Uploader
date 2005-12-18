@@ -27,9 +27,7 @@ my $app = FriendsPhotos->new(
 			spec => {
 				photo =>  {
                     gen_files => {
-                        photo_thumbnail => {
-                            transform_method => gen_thumb({ w => 100, h => 100}),
-                        },
+                        photo_thumbnail =>  gen_thumb({ w => 100, h => 100}),
                     }
                 }
 			},

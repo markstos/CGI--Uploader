@@ -55,9 +55,7 @@ use CGI;
 	 my %imgs = (
 		'test_file' => { 
             gen_files => {
-                'test_file_gen' => {
-                    transform_method => \&test_gen_transform,
-                }
+                'test_file_gen' => \&test_gen_transform,
             },
         },
 	 );

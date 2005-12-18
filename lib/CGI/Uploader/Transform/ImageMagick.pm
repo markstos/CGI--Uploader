@@ -6,7 +6,7 @@ use Params::Validate (qw/:all/);
 use Carp::Assert;
 use vars (qw/@EXPORT $VERSION/);
 
-$VERSION = 2.0;
+$VERSION = 2.1;
 
 @EXPORT = (qw/&gen_thumb/);
 
@@ -24,7 +24,9 @@ As a class method:
 
 Within a CGI::Uploader C<spec>:
 
-    transform_method => gen_thumb( w => $width, h => $height ),
+    gen_files => {
+      my_thumb => gen_thumb( w => $width, h => $height ),
+    }
 
 Looking for a different syntax? See L<BACKWARDS COMPATIBILITY>
 

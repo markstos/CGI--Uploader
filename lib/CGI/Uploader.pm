@@ -12,7 +12,7 @@ use Image::Size;
 require Exporter;
 use vars qw($VERSION);
 
-$VERSION = '2.0';
+$VERSION = '2.1';
 
 =head1 NAME
 
@@ -28,9 +28,7 @@ CGI::Uploader - Manage CGI uploads using SQL database
         # and create one thumbnail for it. 
         img_1 => {    
             gen_files => {       
-                'img_1_thmb_1' => {
-                    transform_method => gen_thumb({ w => 100, h => 100 }),
-                  }   
+                'img_1_thmb_1' => gen_thumb({ w => 100, h => 100 }),
               }                                                                                                 
         },        
     },      
@@ -65,12 +63,8 @@ application.  (Browse, Read, Edit, Add, Delete).
          # The first image has 2 different sized thumbnails                                                                                      
            img_1 => {   
              gen_files => {   
-                     'img_1_thmb_1' => {                                                                          
-                             transform_method => gen_thumb({ w => 100, h => 100 }),   
-                     }                                                 
-                     'img_1_thmb_2' => {                                       
-                             transform_method => gen_thumb({ w => 50, h => 50 }), 
-                     }    
+                     'img_1_thmb_1' => gen_thumb({ w => 100, h => 100 }),   
+                     'img_1_thmb_2' => gen_thumb({ w => 50, h => 50 }), 
              }           
            },           
        },                
@@ -82,7 +76,9 @@ application.  (Browse, Read, Edit, Add, Delete).
             # Besides generating dependent files                                                           
             # We can also transform the file itself                              
             # Here, we shrink the image to be wider than 380    
-            transform_method => gen_thumb({ w => 380 }),
+            transform_method => \&gen_thumb, 
+            # demostrating the old-style param passing
+            params => [{ w => 380 }],
         }
     },
 
@@ -121,24 +117,48 @@ upload before it is stored. The first argument given to the routine will be the
 CGI::Uploader object. The second will be a full path to a file name containing
 the upload.
 
-Additional arguments can be passed to the subroutine using C<params>, as in 
-the example above.
+Additional arguments can be passed to the subroutine using C<params>, as in the
+example above. But don't do that, it's ugly. If you need a custom transform
+method, write a little closure for it like this:
+
+  sub my_transformer {
+      my %args = @_;
+      return sub {
+          my ($self, $file) = shift;
+          # do something with $file and %args here...
+          return $path_to_new_file_i_made;
+      }
+
+Then in the  spec you can put:
+
+ transform_method => my_tranformer(%args),
 
 It must return a full path to a transformed file. 
 
-=item params 
+}
+
+=item params (DEPRECATED)
+
+B<NOTE:> Using a closure based interface provides a cleaner alternative to
+using params. See L<CGI::Uploader::Transform::ImageMagick> for an example.
 
 Used to pass additional arguments to C<transform_method>. See above. 
 
 Each method used may have additional documentation about parameters
 that can be passed to it.
 
+
 =item gen_files
 
 A hash reference to describe files generated from a particular upload.
-The keys are unique identifiers  for the generated files. The values
-are hashrefs, containing keys named C<transform_method> and C<params>,
-which work as described above to generate a transformed version of the file.  
+The keys are unique identifiers  for the generated files. The values 
+are code references (usually closures) that prove a transformation
+for the file. See L<CGI::Uploader::Transform::ImageMagick> for an
+an example. 
+
+An older interface for C<gen_files> is deprecated. For that, the values are
+hashrefs, containing keys named C<transform_method> and C<params>, which work
+as described above to generate a transformed version of the file.  
 
 =item updir_url [required]
 
@@ -757,12 +777,23 @@ sub create_store_gen_files {
         my $gen_tmp_filename;
 
         # tranform as needed
-        if (my $meth = $self->{spec}{$file_field}{gen_files}{$gen_file}{transform_method}) {
+        my $gen_file_key = $self->{spec}{$file_field}{gen_files}{$gen_file};
+        # Recommended code ref API
+        if (ref  $gen_file_key eq 'CODE') {
+            # It needed any params, they should already have been provided via closure.
+            $gen_tmp_filename = $gen_file_key->($self,$tmp_filename);
+        }
+        # Old, yucky hashref API 
+        elsif (ref $gen_file_key eq 'HASH') {
+            my $meth = $gen_file_key->{transform_method};
             $gen_tmp_filename = $meth->(
                 $self,
                 $tmp_filename,
-                $self->{spec}{$file_field}{gen_files}{$gen_file}{params},
+                $gen_file_key->{params},
             );
+        }
+        else {
+            croak "$gen_file for $file_field was not a hashref or code ref. Check spec syntax.";
         }
 
 		# inherit mime-type and extension from parent
