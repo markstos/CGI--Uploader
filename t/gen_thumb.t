@@ -1,5 +1,9 @@
+
 use Test::More;
+use lib 't/lib';
+use DBI;
 use Carp::Assert;
+use CGI::Uploader::Test; # provides setup() and read_file()
 use strict;
 
 BEGIN { 
@@ -36,19 +40,7 @@ use CGI::Uploader::Transform::ImageMagick;
 
 ####
 
-    use vars qw($dsn $user $password);
-    my $file ='t/cgi-uploader.config';
-    my $return;
-    unless ($return = do $file) {
-        warn "couldn't parse $file: $@" if $@;
-        warn "couldn't do $file: $!"    unless defined $return;
-        warn "couldn't run $file"       unless $return;
-    }
-    ok($return, 'loading configuration');
-
-    use DBI;
-    my $DBH =  DBI->connect($dsn,$user,$password);
-    ok($DBH,'connecting to database'), 
+my ($DBH,$drv) = setup();
 
 	 my %imgs = (
 		'img_1' => {
@@ -83,26 +75,6 @@ use CGI::Uploader::Transform::ImageMagick;
      is($w,10,'correct width only width is supplied');
 }
 
-###
-# create uploads table
-my $drv = $DBH->{Driver}->{Name};
-
-ok(open(IN, "<create_uploader_table.".$drv.".sql"), 'opening SQL create file');
-my $sql = join "\n", (<IN>);
-my $created_up_table = $DBH->do($sql);
-ok($created_up_table, 'creating uploads table');
-
-ok(open(IN, "<t/create_test_table.sql"), 'opening SQL create test table file');
-$sql = join "\n", (<IN>);
-
-# Fix mysql non-standard quoting
-$sql =~ s/"/`/gs if ($drv eq 'mysql');
-
-my $created_test_table = $DBH->do($sql);
-ok($created_test_table, 'creating test table');
-
-SKIP: {
-	 skip "Couldn't create database table", 20 unless $created_up_table;
 
      eval {
          my %entity_upload_extra = $u->store_upload(
@@ -120,23 +92,7 @@ SKIP: {
             WHERE upload_id = 2");
     is($db_height, 8, "correct height calculation when thumb height omitted from spec ");
 
-}
 
 	
-# We use an end block to clean up even if the script dies.
-END {
- 	unlink <t/uploads/*>;
- 	if ($DBH) {
- 		if ($created_up_table) {
- 			$DBH->do("DROP SEQUENCE upload_id_seq") if ($drv eq 'Pg');
- 			$DBH->do("DROP TABLE uploads");
- 		}
- 		if ($created_test_table) {
- 			$DBH->do('DROP TABLE cgi_uploader_test');
- 		}
- 		$DBH->disconnect;
- 	}
-    $DBH->disconnect;
-};
  
 
