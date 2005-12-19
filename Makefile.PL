@@ -5,6 +5,8 @@ use inc::Module::Install;
 # Module::Install stuff
 {
     no_index directory => 't/lib';
+    no_index file => 'examples/friends_photos/FriendsPhotos.pm';
+
     license ('perl');
 
    # Graphics::Magick is recommended over Image::Magick, but isn't on CPAN
