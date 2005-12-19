@@ -1,7 +1,6 @@
 Revision history for Perl extension CGI::Uploader.
 
-2.1
-
+2.1 Sun Dec 18 21:39:23 EST 2005
     [ENHANCEMENTS]
     - Further simplified necessary spec API, while maintaining backwards
       compatibility.  Specifying a transformation method for a generated file
