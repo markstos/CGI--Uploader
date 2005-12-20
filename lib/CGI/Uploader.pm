@@ -927,10 +927,12 @@ sub extract_meta {
    require File::MMagic;	
    my $mm = File::MMagic->new; 
 
-   my $fm_mt = $mm->checktype_filename($tmp_filename);
+   # If the uploaded  mime_type was not provided  calculate one from the file magic number
+   # if that does not exist, fall back on the file name
+   my $fm_mt = $mm->checktype_magic($tmp_filename);
+      $fm_mt = $mm->checktype_filename($tmp_filename) if (not defined $fm_mt && $fm_mt eq '') ;
 
-   # If File::MMagic didn't find a mime_type, we'll use the uploaded one.
-   my $mt = ($fm_mt || $uploaded_mt);
+   my $mt = ($uploaded_mt || $fm_mt);
    assert($mt,'found mime type');
 
 
