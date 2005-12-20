@@ -121,7 +121,7 @@ sub _really_gen_thumb {
         die "No graphics module found for image resizing. Install Graphics::Magick or Image::Magick: $@ "
     }
 
-    my ($thumb_tmp_fh, $thumb_tmp_filename) = tempfile('CGIuploaderXXXXX', UNLINK => 1);
+    my ($thumb_tmp_fh, $thumb_tmp_filename) = tempfile('CGIuploaderXXXXX', UNLINK => 1, DIR => $self->{'temp_dir'});
     binmode($thumb_tmp_fh);
 
     my $img = $magick_module->new();

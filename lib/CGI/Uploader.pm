@@ -35,6 +35,7 @@ CGI::Uploader - Manage CGI uploads using SQL database
 
  	updir_url  => 'http://localhost/uploads',
  	updir_path => '/home/user/www/uploads',
+        temp_dir   => '/home/user/www/uploads',
 
  	dbh	       => $dbh,	
 	query      => $q, # defaults to CGI->new(),
@@ -169,6 +170,11 @@ URL to upload storage directory. Should not include a trailing slash.
 File system path to upload storage directory. Should not include a trailing 
 slash.
 
+=item temp_dir 
+
+Optional file system path to temporary directory. Default is File::Spec->tmpdir(). 
+This temporary directory will also be used by gen_files during image transforms.
+
 =item dbh [required]
 
 DBI database handle. Required.
@@ -242,6 +248,10 @@ sub new {
 		up_table     => { 
                           type => SCALAR,
                           default=> 'uploads',
+        },
+        temp_dir   => {
+                type    => SCALAR,
+                default => File::Spec->tmpdir()
         },
         up_table_map => { 
                           type    => HASHREF,
@@ -627,7 +637,7 @@ sub upload {
 
    return undef unless ($fh && $filename);
 
-   my ($tmp_fh, $tmp_filename) = tempfile('CGIuploaderXXXXX', UNLINK => 1);
+   my ($tmp_fh, $tmp_filename) = tempfile('CGIuploaderXXXXX', UNLINK => 1, DIR => $self->{'temp_dir'} );
 
    #   Determine whether binary mode is required in the handling of uploaded 
    #   files - 
