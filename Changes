@@ -1,5 +1,12 @@
 Revision history for Perl extension CGI::Uploader.
 
+2.11 Mon Dec 19 20:18:00 EST 2005
+    [BUG FIXES]
+    - There were was confusion in the 2.1 release as to whether the new API
+      for gen_thumb() took a hash or hashref as input. The code, tests and docs
+      have all been updated to agree: It's a hashref. Thanks to bignose, who
+      wrestled this one.
+
 2.1 Sun Dec 18 21:39:23 EST 2005
     [ENHANCEMENTS]
     - Further simplified necessary spec API, while maintaining backwards

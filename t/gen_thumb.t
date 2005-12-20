@@ -50,10 +50,7 @@ my ($DBH,$drv) = setup();
                     params => [{ w => 10 }],
                 },
                 # new API
-                new_api_thumb => {
-                    transform_method => gen_thumb( w => 10),
-                },
-
+                new_api_thumb => gen_thumb({ w => 10}),
             },
         },
 	 );
@@ -69,10 +66,10 @@ my ($DBH,$drv) = setup();
 	 ok($u, 'Uploader object creation');
 
 {
-     my ($tmp_filename,$img)  = CGI::Uploader::Transform::ImageMagick->gen_thumb({ 
+     my ($tmp_filename,$img)  = CGI::Uploader::Transform::ImageMagick->gen_thumb({
              filename => 't/20x16.png', 
              w => 10, 
-    });
+     });
      my ($w,$h) = $img->Get('width','height');
      is($h,8,'correct height only width is supplied (also testing new API)');
 }

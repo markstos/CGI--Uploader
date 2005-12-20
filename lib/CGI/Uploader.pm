@@ -12,7 +12,7 @@ use Image::Size;
 require Exporter;
 use vars qw($VERSION);
 
-$VERSION = '2.1';
+$VERSION = '2.11';
 
 =head1 NAME
 

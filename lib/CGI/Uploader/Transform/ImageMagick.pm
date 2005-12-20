@@ -6,7 +6,7 @@ use Params::Validate (qw/:all/);
 use Carp::Assert;
 use vars (qw/@EXPORT $VERSION/);
 
-$VERSION = 2.1;
+$VERSION = 2.11;
 
 @EXPORT = (qw/&gen_thumb/);
 
@@ -25,7 +25,7 @@ As a class method:
 Within a CGI::Uploader C<spec>:
 
     gen_files => {
-      my_thumb => gen_thumb( w => $width, h => $height ),
+      my_thumb => gen_thumb({ w => $width, h => $height }),
     }
 
 Looking for a different syntax? See L<BACKWARDS COMPATIBILITY>
@@ -62,13 +62,14 @@ sub gen_thumb  {
     }
     # Otherwise, just generate a closure pass back a code ref for later use
     else {
-        my %args = @_;
+        # require a single hashref as input
+        my ($args_href) = validate_pos(@_, { type => HASHREF });
         return sub {
             my $self = shift;
             my $filename = shift;
             _really_gen_thumb($self, {
                     filename => $filename, 
-                    %args,
+                    %$args_href,
                 });
         }
     }
