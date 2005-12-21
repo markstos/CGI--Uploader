@@ -1,5 +1,6 @@
 package CGI::Uploader::Test;
 use Test::More;
+use Carp;
 use base 'Exporter';
 use strict;
 
@@ -66,7 +67,7 @@ sub setup {
     $item_tbl_sql =~ s/"/`/gs if ($drv eq 'mysql');
 
     $created_test_table = $DBH->do($item_tbl_sql);
-    ok($created_test_table, 'creating test table') || die;
+    ok($created_test_table, 'creating test table') || croak;
 
     return ($DBH,$drv);
 
@@ -83,7 +84,7 @@ Slurp a file, like File::Slurp;
 sub read_file {
     my $file = shift;
     local( $/, *FH );
-    open( FH, $file ) or die "failed to open file: $file: $!\n";
+    open( FH, $file ) or croak "failed to open file: $file: $!\n";
     my $text = <FH>;
     return $text;
 }
@@ -97,7 +98,7 @@ sub test_gen_transform {
     # remove possible leading "t/"
     $path =~ s?^t/??;
     my $new_path = "t/$path".'.gen';
-    open(OUT, ">$new_path")  || die "can't open $new_path";
+    open(OUT, ">$new_path")  || croak "can't open $new_path";
     print OUT $file_contents;
     close(OUT);
     return $new_path;
