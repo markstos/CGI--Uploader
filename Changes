@@ -1,5 +1,9 @@
 Revision history for Perl extension CGI::Uploader.
 
+    [ENHANCEMENTS]
+    - A new 'temp_dir' option has been added to allow to you set your own
+      temporary directory. (Jeff MacDonald)
+
 2.11 Mon Dec 19 20:18:00 EST 2005
     [BUG FIXES]
     - There were was confusion in the 2.1 release as to whether the new API
