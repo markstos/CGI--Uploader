@@ -12,7 +12,7 @@ use Image::Size;
 require Exporter;
 use vars qw($VERSION);
 
-$VERSION = '2.11';
+$VERSION = '2.12';
 
 =head1 NAME
 
@@ -418,6 +418,8 @@ sub store_uploads {
 	map { delete $entity->{$_} } keys %{ $self->{spec} };
     # For good measure.
     delete $entity->{''};
+
+    File::Temp::cleanup();
 
 	return $entity;
 }

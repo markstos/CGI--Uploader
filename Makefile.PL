@@ -142,7 +142,7 @@ WriteMakefile(
         'CGI'                 => 0,
         'DBI'                 => 0,
         'DBD::SQLite'         => 1.1,
-        'File::Temp'          => 0.14,
+        'File::Temp'          => 0.15,
         'Test::DatabaseRow'   => 0,
         'HTTP::BrowserDetect' => 0,
         'Scalar::Util'        => 0,
