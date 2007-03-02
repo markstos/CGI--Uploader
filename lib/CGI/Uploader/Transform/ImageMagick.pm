@@ -181,11 +181,7 @@ sub _calc_target_size {
 # load Graphics::Magick or Image::Magick if one is not already loaded.
 sub _load_magick_module {
     my $module_name = shift;
-    eval {
-        local $SIG{__DIE__};
-        require $module_name;
-    };
-    return !$@;
+    return eval "require $module_name";
 }
 
 =head2 BACKWARDS COMPATIBILITY

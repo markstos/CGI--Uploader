@@ -29,6 +29,10 @@ else {
 
 use CGI::Uploader::Transform::ImageMagick;
 
+ # This should work, even if we don't preload either one 
+ delete $INC{'Image/Magick.pm'};
+ delete $INC{'Graphics/Magick.pm'};
+
  my ($tmp_filename, $img)  = CGI::Uploader::Transform::ImageMagick->gen_thumb( 't/20x16.png', [ w => 5 ]);
 
  my ($w,$h) = $img->Get('width','height');

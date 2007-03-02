@@ -1,5 +1,10 @@
 Revision history for Perl extension CGI::Uploader.
 
+    [BUG FIXES]	
+    - gen_thumb() now works if Image::Magick or Graphics::Magick
+      is not already loaded. (Thanks to bug report by Jeff MacDonald,
+      RT#20775).
+
     [ENHANCEMENTS]
     - A new 'temp_dir' option has been added to allow to you set your own
       temporary directory. (Jeff MacDonald)
