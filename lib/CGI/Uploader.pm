@@ -920,7 +920,8 @@ sub extract_meta {
     my $client_os = $^O;
     my $browser = HTTP::BrowserDetect->new;
     $client_os = 'MSWin32' if $browser->windows;
-    $client_os = 'MacOS' if $browser->mac;
+    $client_os = 'MacOS'   if $browser->mac;
+    $client_os = 'Unix'    if $browser->macosx;
     require File::Basename;
     File::Basename::fileparse_set_fstype($client_os);
     $file_name = File::Basename::fileparse($file_name,[]);
