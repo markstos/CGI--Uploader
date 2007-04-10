@@ -144,7 +144,7 @@ WriteMakefile(
         'DBD::SQLite'         => 1.1,
         'File::Temp'          => 0.15,
         'Test::DatabaseRow'   => 0,
-        'HTTP::BrowserDetect' => 0,
+        'HTTP::BrowserDetect' => 0.98,
         'Scalar::Util'        => 0,
 
         # For testing
