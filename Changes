@@ -1,5 +1,7 @@
 Revision history for Perl extension CGI::Uploader.
 
+2.13 Mon Apr  9 22:39:54 EDT 2007
+
     [BUG FIXES]	
     - Better Mac OS X detection (Jeff MacDonald)
     - gen_thumb() now works if Image::Magick or Graphics::Magick
