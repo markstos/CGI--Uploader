@@ -24,7 +24,7 @@ if (! $Config{d_fork} ) {
     plan skip_all => "fork not available on this platform";
 }
 else {
-    plan tests => 23;
+    plan tests => 24;
 
 }
 
@@ -83,11 +83,18 @@ use CGI;
 	my @files = <t/uploads/*>;	
 	ok(scalar @files == 2, 'expected number of files created');
 
+    # We jump through this hoop because the MIME type detector
+    # may have chosen ".txt" or "*.asc" for the file extension.
+    my ($test_file_parent) = grep { /1/ } @files;
+    my ($test_file_gen )   = grep { /2/ } @files;
+
     my $id_of_test_file_parent = 1;
     my $id_of_test_file_gen    = 2;
 
     my $new_file_contents; 
-    eval { $new_file_contents = read_file("t/uploads/$id_of_test_file_gen.txt"); };
+    eval { $new_file_contents = read_file($test_file_gen); };
+    # Maybe the file was detected as *.asc instead, so try that. 
+
     is($@, '', 'survived eval') || diag `ls -l t/uploads/`;
     like($new_file_contents,qr/gen/, "generated file is as expected");
 
