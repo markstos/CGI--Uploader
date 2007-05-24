@@ -1,5 +1,7 @@
 Revision history for Perl extension CGI::Uploader.
 
+2.14 Thu May 24 13:19:27 EDT 2007
+
     [BUG FIXES]
     - Avoid SQL error when two column names are the same by giving explicit table name.
 
