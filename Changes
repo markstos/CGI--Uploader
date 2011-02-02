@@ -1,5 +1,32 @@
 Revision history for Perl extension CGI::Uploader.
 
+2.17 Thu Apr  2 11:43:50 EDT 2009
+    [BUG FIXES]
+    - Small but fatal typo fix from 2.16 release cycle. 
+
+2.16 Thu Apr  2 11:36:40 EDT 2009
+
+    [BUG FIXES]
+    - Using 'transform_method' to tranform an upload in place was broken.
+    - Now use File::Spec instead of hardcoding "/" as a path separator. (Ron Savage) 
+    - Use binmode() on the right file handle (Ron Savage)
+    - upload_id was hardcoded in one place instead of using up_table_map (Ron Savage)
+
+    [DOCUMENTATION]
+    - Quit recommending SQL::Abstract in the Cookbook (but we use it internally)
+
+    [INTERNAL]
+    - Mark "Image::Size" as a requirement, if only to get tests to stop failing.
+      It's only really required if  you use the Image::Magick transformations. 
+
+
+2.15 Sun Jul 15 07:21:24 EDT 2007
+    - no functionality changes
+
+    [INTERNAL]
+    - improved importing code style.
+    - Clarify docs regarding file_scheme vs. file_name (Jaldhar)
+
 2.14 Thu May 24 13:19:27 EDT 2007
 
     [BUG FIXES]

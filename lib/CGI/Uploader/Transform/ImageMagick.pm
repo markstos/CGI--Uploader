@@ -1,14 +1,14 @@
 package CGI::Uploader::Transform::ImageMagick;
 
 use base 'Exporter';
-use File::Temp qw/tempfile/;
-use Params::Validate (qw/:all/);
+use File::Temp 'tempfile';
+use Params::Validate ':all';
 use Carp::Assert;
-use vars (qw/@EXPORT $VERSION/);
+use vars qw(@EXPORT $VERSION);
 
-$VERSION = 2.13;
+$VERSION = 2.17;
 
-@EXPORT = (qw/&gen_thumb/);
+@EXPORT = qw(&gen_thumb);
 
 =head2 gen_thumb()
 

@@ -3,16 +3,16 @@ package CGI::Uploader;
 use 5.005;
 use strict;
 use Carp;
-use Params::Validate qw/:all/;
+use Params::Validate ':all';
 use File::Path;
 use File::Spec;
-use File::Temp qw/tempfile/;
+use File::Temp 'tempfile';
 use Carp::Assert;
 use Image::Size;
 require Exporter;
-use vars qw($VERSION);
+use vars '$VERSION';
 
-$VERSION = '2.14';
+$VERSION = '2.17';
 
 =head1 NAME
 
@@ -20,7 +20,7 @@ CGI::Uploader - Manage CGI uploads using SQL database
 
 =head1 Synopsis
 
- use CGI::Uploader::Transform::ImageMagick (qw/gen_thumb/);
+ use CGI::Uploader::Transform::ImageMagick 'gen_thumb';
 
  my $u = CGI::Uploader->new(
  	spec       => {
@@ -232,7 +232,13 @@ result may look like this:
  2/0/2/123.jpg
 
 This should scale well to millions of files. If you want even more control,
-consider overriding the C<build_loc()> method.
+consider overriding the C<build_loc()> method, which is  used to return the
+stored file path.
+
+Note that specifying the file storage scheme for the file system is not related
+to the C<file_name> stored in the database, which is always the original uploaded
+file name.
+
 
 =back 
 
@@ -641,11 +647,7 @@ sub upload {
 
    my ($tmp_fh, $tmp_filename) = tempfile('CGIuploaderXXXXX', UNLINK => 1, DIR => $self->{'temp_dir'} );
 
-   #   Determine whether binary mode is required in the handling of uploaded 
-   #   files - 
-   #   Binary mode is deemed to be required when we (the server) are running one one 
-   #   of these platforms: for Windows, OS/2 and VMS 
-   binmode($tmp_fh) if ($^O =~ /OS2|VMS|Win|DOS|Cygwin/i);
+   binmode($fh);
 
    require File::Copy;
    import  File::Copy;
@@ -701,7 +703,7 @@ sub store_upload {
     # Transform file if needed
     if (my $meth = $self->{spec}{$file_field}{transform_method}) {
         $tmp_filename = $meth->( $self, 
-            $file_name,
+            $tmp_filename,
             $self->{spec}{$file_field}{params},
         );
     }
@@ -1034,7 +1036,7 @@ sub store_meta {
 
     if (!$is_update && $self->{db_driver} eq 'Pg') {
         $id = $DBH->selectrow_array("SELECT NEXTVAL('".$self->{up_seq}."')");
-        $copy{upload_id} = $id;
+	$copy{$map->{upload_id} } = $id;
     }
 
     my @orig_keys = keys %copy;
@@ -1298,7 +1300,8 @@ sub build_loc {
             mkpath($full_path);
         }
 
-        $loc = "$md5_path/$id$ext";
+
+        $loc = File::Spec->catdir($md5_path,"$id$ext");
     }
 }
 

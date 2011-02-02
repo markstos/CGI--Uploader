@@ -1,5 +1,3 @@
-#arch-tag: Mark_Stosberg_<mark@summersault.com>--2004-04-02_19:00:27
-# Don't edit the above line. Thanks.
 
 =head1 NAME
 
@@ -210,11 +208,10 @@ to validate the form.
  #    photo_thumbnail_id => 4,
  # }
 
- # I like to use SQL::Abstract for easy inserts.
- use SQL::Abstract;
- my $sql = SQL::Abstract->new;
- my($stmt, @bind) = $sql->insert('address_book',$friend);
- $dbh->do($stmt,{},@bind);
+ # I like to use SQL::Interp for easy inserts.
+ # See DBIx::Simple for an even more friendly wrapper.
+ use SQL::Interp 'sql_interp';
+ $dbh->do(sql_interp "INSERT INTO address_book",$friend);
 
 
 =head2 Database Result of Adding

@@ -13,6 +13,10 @@ use inc::Module::Install;
     recommends
         'Image::Magick'    => 0;
 
+   # This could probably become a "test_requires"  
+   requires 'Image::Size' => 0;
+
+
 }
 
 
