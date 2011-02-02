@@ -621,6 +621,7 @@ sub upload {
     my $filename = $q->param($file_field);
 
     if ($q->isa('CGI::Simple') ) {
+        local $CGI::Simple::DISABLE_UPLOADS = 0;  # Having uploads enabled is mandatory for this to work.
         $fh = $q->upload($filename);
         $mt = $q->upload_info($filename, 'mime' );
 
@@ -635,6 +636,7 @@ sub upload {
     }
     # default to CGI.pm behavior
     else {
+        local $CGI::DISABLE_UPLOADS = 0;  # Having uploads enabled is mandatory for this to work.
         $fh = $q->upload($file_field);
         $mt = $q->uploadInfo($fh)->{'Content-Type'} if $q->uploadInfo($fh);
 

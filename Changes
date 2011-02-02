@@ -1,5 +1,16 @@
 Revision history for Perl extension CGI::Uploader.
 
+    [INTERNAL]
+
+    - We now call "local $CGI::DISABLE_UPLOADS=0" just before uploading with
+      CGI.pm or CGI::Simple. For improved security, set the related variable
+      globally to "1" to disable file uploads by default, and then re-enable
+      them any other places where you need uploading enabled. Read about
+      $DISABLE_UPLOADS in CGI.pm or CGI::Simple for details.
+      (Thanks to Brian Meeker for help with this patch.)
+
+    - Now require Perl 5.8 as the minimum version. 
+
 2.17 Thu Apr  2 11:43:50 EDT 2009
     [BUG FIXES]
     - Small but fatal typo fix from 2.16 release cycle. 
