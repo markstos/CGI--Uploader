@@ -614,44 +614,44 @@ Currently CGI.pm, CGI::Simple and Apache::Request and are supported.
 sub upload {
     my $self = shift;
     my $file_field = shift;
-   my $q = shift || $self->{query};
+    my $q = shift || $self->{query};
 
-   my $fh;
-   my $mt = '';
-   my $filename = $q->param($file_field);
+    my $fh;
+    my $mt = '';
+    my $filename = $q->param($file_field);
 
-   if ($q->isa('CGI::Simple') ) {
-       $fh = $q->upload($filename);
-       $mt = $q->upload_info($filename, 'mime' );
+    if ($q->isa('CGI::Simple') ) {
+        $fh = $q->upload($filename);
+        $mt = $q->upload_info($filename, 'mime' );
 
-       if (!$fh && $q->cgi_error) {
-           warn $q->cgi_error && return undef;
-       }
-   }
-   elsif ( $q->isa('Apache::Request') ) {
+        if (!$fh && $q->cgi_error) {
+            warn $q->cgi_error && return undef;
+        }
+    }
+    elsif ( $q->isa('Apache::Request') ) {
         my $upload = $q->upload($file_field);
         $fh = $upload->fh;
         $mt = $upload->type;
-   }
-   # default to CGI.pm behavior
-   else {
-       $fh = $q->upload($file_field);
-       $mt = $q->uploadInfo($fh)->{'Content-Type'} if $q->uploadInfo($fh);
+    }
+    # default to CGI.pm behavior
+    else {
+        $fh = $q->upload($file_field);
+        $mt = $q->uploadInfo($fh)->{'Content-Type'} if $q->uploadInfo($fh);
 
-       if (!$fh && $q->cgi_error) {
-           warn $q->cgi_error && return undef;
-       }
-   }
+        if (!$fh && $q->cgi_error) {
+            warn $q->cgi_error && return undef;
+        }
+    }
 
-   return undef unless ($fh && $filename);
+    return undef unless ($fh && $filename);
 
-   my ($tmp_fh, $tmp_filename) = tempfile('CGIuploaderXXXXX', UNLINK => 1, DIR => $self->{'temp_dir'} );
+    my ($tmp_fh, $tmp_filename) = tempfile('CGIuploaderXXXXX', UNLINK => 1, DIR => $self->{'temp_dir'} );
 
-   binmode($fh);
+    binmode($fh);
 
-   require File::Copy;
-   import  File::Copy;
-   copy($fh,$tmp_filename) || croak "upload: unable to create tmp file: $!";
+    require File::Copy;
+    import  File::Copy;
+    copy($fh,$tmp_filename) || croak "upload: unable to create tmp file: $!";
 
     return ($tmp_filename,$mt,$filename);
 }
