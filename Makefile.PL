@@ -1,5 +1,5 @@
 use strict;
-BEGIN { $^W = 1 } # use warnings in Perl 5.6 parlance
+use warnings;
 use inc::Module::Install;
 
 # Module::Install stuff
@@ -13,7 +13,7 @@ use inc::Module::Install;
     recommends
         'Image::Magick'    => 0;
 
-   # This could probably become a "test_requires"  
+   # This could probably become a "test_requires"
    requires 'Image::Size' => 0;
 
 
@@ -27,7 +27,7 @@ use Data::Dumper ();
 my $TESTDB  = "test";
 
 use vars qw($opt);
-$opt = { 
+$opt = {
     "help"    => \&Usage ,
      testdsn  => 'dbi:SQLite:dbname=t/test.db',
 };
@@ -35,7 +35,7 @@ $opt = {
 Getopt::Long::GetOptions($opt, "help", "testdsn=s", "testuser=s","testpassword=s");
 my $source = {};
 
-foreach my $key (qw/testdsn testuser testpassword/) {
+for my $key (qw/testdsn testuser testpassword/) {
   Configure($opt, $source, $key);
 }
 
@@ -46,16 +46,16 @@ MSG
 
 delete $opt->{'help'};
 my $keylen = 0;
-foreach my $key (keys %$opt) {
+for my $key (keys %$opt) {
   $keylen = length($key) if length($key) > $keylen;
 }
 my $slen = 0;
-foreach my $val (values %$source) {
+for my $val (values %$source) {
   $slen = length($val) if length($val) > $slen;
 }
-foreach my $key (sort { $a cmp $b} keys %$opt) {
+for my $key (sort { $a cmp $b} keys %$opt) {
   printf("  %-" . $keylen . "s (%-" . $slen . "s) = %s\n",
-	 $key, $source->{$key}, $opt->{$key})
+     $key, $source->{$key}, $opt->{$key})
 }
 
 print <<"MSG";
@@ -75,7 +75,7 @@ if (open(FILE, ">$fileName")) {
     print FILE '$dsn      = q!'.$opt->{testdsn}."!;\n";
     print FILE '$user     = q!'.$opt->{testuser}."!;\n";
     print FILE '$password = q!'.$opt->{testpassword}."!;\n";
-	print FILE "1;\n";
+    print FILE "1;\n";
     close(FILE) or die "Failed to create $fileName: $!";
 }
 
@@ -86,7 +86,7 @@ sub Configure {
         $source->{$param} = "Users choice";
         return;
     }
-    elsif ($param eq "testuser"  || $param eq "testpassword" || 
+    elsif ($param eq "testuser"  || $param eq "testpassword" ||
              $param eq "testdsn") {
         $source->{$param} = "default";
         $opt->{$param} = "";
@@ -104,15 +104,15 @@ Possible options are:
 
   --testdsn=<dsn>         Use the DBI datasource <dsn> for running the test suite
 
-	  Postgres Example:
-	   dbi:Pg:dbname=\$db;host=\$host;username=\$user;password=\$pw
+      Postgres Example:
+       dbi:Pg:dbname=\$db;host=\$host;username=\$user;password=\$pw
 
-	  MySQL Example:
-	   DBI:mysql:database=\$db;host=\$hostname
+      MySQL Example:
+       DBI:mysql:database=\$db;host=\$hostname
 
- --testuser=<user>	
+ --testuser=<user>
 
- --testpassword=<password>	
+ --testpassword=<password>
 
   --help                 Print this message and exit
 
@@ -125,24 +125,25 @@ USAGE
 
 
 
-use 5.005;
+use 5.008;
 # See lib/ExtUtils/MakeMaker.pm for details of how to influence
 # the contents of the Makefile that is written.
 WriteMakefile(
-    'NAME'		=> 'CGI::Uploader',
-    'VERSION_FROM'	=> 'lib/CGI/Uploader.pm', # finds $VERSION
-    'PREREQ_PM'		=> {
-		'Carp::Assert'		  => 0,
-		'CGI::Carp' 		  => 0,
+    'NAME'      => 'CGI::Uploader',
+     AUTHOR     => 'Mark Stosberg <mark@summersault.com>',
+    'VERSION_FROM'  => 'lib/CGI/Uploader.pm', # finds $VERSION
+    'PREREQ_PM'     => {
+        'Carp::Assert'        => 0,
+        'CGI::Carp'           => 0,
         'Digest::MD5'         => 0,
-		'File::Copy'		  => 0,
-		'File::Spec'		  => 0,
-		'File::MMagic'	      => 1.22,		
+        'File::Copy'          => 0,
+        'File::Spec'          => 0,
+        'File::MMagic'        => 1.22,
         'File::Path'          => 0,
-		'MIME::Type'		  => 0, 
-		'MIME::Types'		  => 0,
-		'Params::Validate'    => 0.77,
-		'SQL::Abstract'	      => 0,
+        'MIME::Type'          => 0,
+        'MIME::Types'         => 0,
+        'Params::Validate'    => 0.77,
+        'SQL::Abstract'       => 0,
         'CGI'                 => 0,
         'DBI'                 => 0,
         'DBD::SQLite'         => 1.1,
@@ -152,16 +153,7 @@ WriteMakefile(
         'Scalar::Util'        => 0,
 
         # For testing
-        'HTTP::Request::Common' => 0,   
+        'HTTP::Request::Common' => 0,
 
-        # Used 
-
-
-	}, 
-    ($] >= 5.005 ?    ## Add these new keywords supported since 5.005
-      (
-		  #ABSTRACT_FROM => 'lib/CGI/Uploader.pm', # retrieve abstract from module
-       AUTHOR     => 'Mark Stosberg <mark@summersault.com>') : ()),
+    },
 );
-
-

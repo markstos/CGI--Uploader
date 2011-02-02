@@ -1,6 +1,6 @@
 package CGI::Uploader;
 
-use 5.005;
+use 5.008;
 use strict;
 use Carp;
 use Params::Validate ':all';
