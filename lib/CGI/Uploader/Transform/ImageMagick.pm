@@ -15,9 +15,9 @@ our @EXPORT = qw(&gen_thumb);
 As a class method:
 
  ($thumb_tmp_filename)  = CGI::Uploader::Transform::ImageMagick->gen_thumb({
-    filename => $orig_filename, 
-           w => $width, 
-           h => $height 
+    filename => $orig_filename,
+           w => $width,
+           h => $height
     });
 
 Within a CGI::Uploader C<spec>:
@@ -35,18 +35,18 @@ C<gen_thumb> can be called as object or class method. As a class method,
 there there is no need to call C<new()> before calling this method.
 
 L<Graphics::Magick> is used as the first choice image service module.
-L<Image::Magick> is tried next. 
+L<Image::Magick> is tried next.
 
 Input:
 
-    filename - filename of source image 
+    filename - filename of source image
     w        - max width of thumbnail
     h        - max height of thumbnail
 
 One or both  of C<w> or C<h> is required.
 
 Output:
-    - filename of generated tmp file for the thumbnail 
+    - filename of generated tmp file for the thumbnail
     - the initialized image generation object. (You generally shouldn't need this)
 
 =cut
@@ -66,7 +66,7 @@ sub gen_thumb  {
             my $self = shift;
             my $filename = shift;
             _really_gen_thumb($self, {
-                    filename => $filename, 
+                    filename => $filename,
                     %$args_href,
                 });
         }
@@ -78,7 +78,7 @@ sub _really_gen_thumb {
     my (%p,$orig_filename,$params);
     # If we have the new hashref API
     if (ref $_[0] eq 'HASH') {
-        %p = validate(@_,{ 
+        %p = validate(@_,{
                 filename => { type => SCALAR },
                 w => { type => SCALAR | UNDEF, regex => qr/^\d*$/, optional => 1, },
                 h => { type => SCALAR | UNDEF, regex => qr/^\d*$/, optional => 1 },
@@ -89,7 +89,7 @@ sub _really_gen_thumb {
     else {
         ($orig_filename, $params) = validate_pos(@_,1,{ type => ARRAYREF });
         # validate handles a hash or hashref transparently
-        %p = validate(@$params,{ 
+        %p = validate(@$params,{
                 w => { type => SCALAR | UNDEF, regex => qr/^\d*$/, optional => 1, },
                 h => { type => SCALAR | UNDEF, regex => qr/^\d*$/, optional => 1 },
             });
@@ -131,7 +131,7 @@ sub _really_gen_thumb {
 
         my ($target_w,$target_h) = _calc_target_size($img,$p{w},$p{h});
 
-        $err = $img->Resize($target_w.'x'.$target_h); 
+        $err = $img->Resize($target_w.'x'.$target_h);
         die "Error while resizing $orig_filename: $err" if $err;
         $err = $img->Write($thumb_tmp_filename);
         die "Error while writing $orig_filename: $err" if $err;
@@ -139,7 +139,7 @@ sub _really_gen_thumb {
     if ($@) {
         warn $@;
         my $code;
-        # codes > 400 are fatal 
+        # codes > 400 are fatal
         die $err if ((($code) = $err =~ /(\d+)/) and ($code > 400));
     }
 
@@ -150,11 +150,11 @@ sub _really_gen_thumb {
 
 
 # Calculate the target with height
-# 
+#
 # my ($target_w,$target_h) = _calc_target_size($img,$p{w},$p{h})
-# 
+#
 # Input:
-# 
+#
 #   - Magick object, pre-opened with the original file
 #   - provided width
 #   - provided height
@@ -184,21 +184,21 @@ sub _load_magick_module {
 
 =head2 BACKWARDS COMPATIBILITY
 
-These older, more awkward syntaxes are still supported: 
+These older, more awkward syntaxes are still supported:
 
 As a class method:
 
  ($thumb_tmp_filename)  = CGI::Uploader::Transform::ImageMagick->gen_thumb(
-    $orig_filename, 
+    $orig_filename,
     [ w => $width, h => $height ]
     );
 
 In a C<CGI::Uploader> C<spec>:
 
 'my_img_field_name' => {
-    transform_method => \&gen_thumb,                                                                    
-    params => [ w => 100, h => 100 ],                                                             
-  }                                                                                                         
+    transform_method => \&gen_thumb,
+    params => [ w => 100, h => 100 ],
+  }
 
 
 1;
