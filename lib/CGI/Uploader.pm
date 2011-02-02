@@ -936,7 +936,7 @@ sub extract_meta {
    # If the uploaded  mime_type was not provided  calculate one from the file magic number
    # if that does not exist, fall back on the file name
    my $fm_mt = $mm->checktype_magic($tmp_filename);
-      $fm_mt = $mm->checktype_filename($tmp_filename) if (not length $fm_mt) ;
+      $fm_mt = $mm->checktype_filename($tmp_filename) if (not defined $fm_mt or not length $fm_mt) ;
 
    my $mt = ($uploaded_mt || $fm_mt);
    assert($mt,'found mime type');

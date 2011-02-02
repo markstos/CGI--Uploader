@@ -13,6 +13,8 @@ Revision history for Perl extension CGI::Uploader.
 
     - Now require Perl 5.8 as the minimum version. 
 
+    - Address warning about $fm_mt being undefined.
+
 2.17 Thu Apr  2 11:43:50 EDT 2009
     [BUG FIXES]
     - Small but fatal typo fix from 2.16 release cycle. 
