@@ -5,10 +5,8 @@ use Carp::Assert;
 use CGI::Uploader::Test; # provides setup() and read_file()
 use strict;
 
-BEGIN { 
-    use_ok('CGI::Uploader');
-    use_ok('File::Path');
-};
+use CGI::Uploader;
+use File::Path;
 
 my $found_module = 0;
 eval { require Image::Magick; };
@@ -29,7 +27,7 @@ else {
 
 use CGI::Uploader::Transform::ImageMagick;
 
- # This should work, even if we don't preload either one 
+ # This should work, even if we don't preload either one
  delete $INC{'Image/Magick.pm'};
  delete $INC{'Graphics/Magick.pm'};
 
@@ -45,8 +43,8 @@ use CGI::Uploader::Transform::ImageMagick;
 
 my ($DBH,$drv) = setup();
 
-	 my %imgs = (
-		'img_1' => {
+     my %imgs = (
+        'img_1' => {
             gen_files => {
                 # old API
                 img_1_thumb => {
@@ -57,30 +55,30 @@ my ($DBH,$drv) = setup();
                 new_api_thumb => gen_thumb({ w => 10}),
             },
         },
-	 );
+     );
 
      use CGI;
-	 my $u = 	CGI::Uploader->new(
-		updir_path=>'t/uploads',
-		updir_url=>'http://localhost/test',
-		dbh  => $DBH,
-		spec => \%imgs,
+     my $u =    CGI::Uploader->new(
+        updir_path=>'t/uploads',
+        updir_url=>'http://localhost/test',
+        dbh  => $DBH,
+        spec => \%imgs,
         query => CGI->new(),
-	 );
-	 ok($u, 'Uploader object creation');
+     );
+     ok($u, 'Uploader object creation');
 
 {
      my ($tmp_filename,$img)  = CGI::Uploader::Transform::ImageMagick->gen_thumb({
-             filename => 't/20x16.png', 
-             w => 10, 
+             filename => 't/20x16.png',
+             w => 10,
      });
      my ($w,$h) = $img->Get('width','height');
      is($h,8,'correct height only width is supplied (also testing new API)');
 }
 
 {
-     my ($tmp_filename,$img)  = CGI::Uploader::Transform::ImageMagick->gen_thumb({ 
-             filename => 't/20x16.png', 
+     my ($tmp_filename,$img)  = CGI::Uploader::Transform::ImageMagick->gen_thumb({
+             filename => 't/20x16.png',
              h => 8,
          });
      my ($w,$h) = $img->Get('width','height');
@@ -100,18 +98,18 @@ my ($DBH,$drv) = setup();
 
     my $db_height =$DBH->selectrow_array(
         "SELECT height
-            FROM uploads 
+            FROM uploads
             WHERE upload_id = 2");
     is($db_height, 8, "correct height calculation when thumb height omitted from spec ");
 
 {
     my $db_height =$DBH->selectrow_array(
         "SELECT height
-            FROM uploads 
+            FROM uploads
             WHERE upload_id = 3");
     is($db_height, 8, "correct height calculation when thumb height omitted from spec (using new API) ");
 }
 
-	
- 
+
+
 

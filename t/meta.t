@@ -5,9 +5,9 @@ use Carp::Assert;
 use lib 't/lib';
 use strict;
 
-BEGIN { use_ok('CGI::Uploader') };
-BEGIN { use_ok('DBI') };
-BEGIN { use_ok('CGI') };
+use CGI::Uploader;
+use DBI;
+use CGI;
 use HTTP::Request::Common;
 use CGI::Uploader::Test;
 
