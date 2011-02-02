@@ -5,7 +5,7 @@ use File::Temp 'tempfile';
 use Params::Validate ':all';
 use Carp::Assert;
 
-our $VERSION = 2.17;
+our $VERSION = 2.18;
 our @EXPORT = qw(&gen_thumb);
 
 =head2 gen_thumb()
