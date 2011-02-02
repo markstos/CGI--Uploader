@@ -10,9 +10,8 @@ use File::Temp 'tempfile';
 use Carp::Assert;
 use Image::Size;
 require Exporter;
-use vars '$VERSION';
 
-$VERSION = '2.17';
+our $VERSION = '2.18';
 
 =head1 NAME
 
