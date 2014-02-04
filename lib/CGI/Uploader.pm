@@ -1060,6 +1060,7 @@ sub store_meta {
      ($stmt,@bind)   = $sql->update($self->{up_table},\%copy, { $map->{upload_id} => $id });
     }
     else {
+     $copy{id} = $id;
      ($stmt,@bind)   = $sql->insert($self->{up_table},\%copy);
     }
 
